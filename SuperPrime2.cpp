@@ -1,100 +1,119 @@
-//×÷Òµ£ºÃæÏò¶ÔÏóÉè¼ÆÒÔÏÂ¿ò¼ÜµÄ´úÂëÏ¸½Ú£¬³ÌÐòÄÜ±àÒëÔËÐÐµÃµ½ÕýÈ·½á¹û
+//ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¿ï¿½ÜµÄ´ï¿½ï¿½ï¿½Ï¸ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÐµÃµï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½
 #include <cmath>
 #include <iostream>
-class SuperPrime {
-public:
-  SuperPrime() : number(0) { //ÎªÊ²Ã´±ØÐëÓÐ£¿
-    size = 0;
-  }
-  SuperPrime(int n) : number(n) {
-    size = 0;
-    split(); //Ëü¾ÍÊÇ¹¹Ôì¶ÔÏó
-  }
-  ~SuperPrime() {
-    for (int i = 0; i < size; ++i) //Ïú»Ù¶ÔÏó
-      delete N[i];
-  }
-  bool isSuperPrime() {
-    SuperPrime a(sum()); //½«ÆÕÍ¨ÕûÊý×ª±äÎª¶ÔÏó
-    SuperPrime b(multi());
-    SuperPrime c(squareSum());
-    if (isPrime() && a.isPrime() && b.isPrime() && c.isPrime())
-      return true;
-    return false;
-  }
-
-  int getNum() { return number; }
-
-private:
-  const int number;
-  SuperPrime *N[100];
-  int size;
-  bool isPrime() {
-    // 2µ½number-1µÄÒò×Ó
-    for (int i = 2; i <= floor(sqrt(number) + 0.5); i++)
-      if (number % i == 0)
-        // number split into N
-        return false;
-    return true;
-  }
-  void split() { //¹¤³§·½·¨Éè¼ÆÄ£Ê½
-    // number split into N
-    if (number < 10) {
-      size = 1;
-      return;
-    }
-    int temp = number;
-    while (temp > 0) {
-      int n = temp % 10;
-      temp /= 10;
-      N[size] = new SuperPrime(n); //¹¹Ôì¶ÔÏó
-      size += 1;
-    }
-  }
-  int sum() {
-    int ans = 0;
-    for (int i = 0; i < size; i++)
-      ans += N[i]->number;
-    return ans;
-  }
-  int multi() { return 0; }
-  int squareSum() {
-    int ans = 0;
-    for (int i = 0; i < size; i++)
-      ans += N[i]->number * N[i]->number;
-    return ans;
-  }
+class Prime {
+  public:
+  	Prime():number(0) {
+	}
+  	Prime(int n):number(n) {
+	}
+	~Prime() {
+	}
+  	bool isPrime() { 
+  	  //2ï¿½ï¿½number-1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+  	  return false;
+	}
+  private:
+  	const int number;
+}; 
+class PrimeSet {
+  public:
+  	PrimeSet(int size) {
+  	  //ï¿½ï¿½ï¿½ÏµÄ¹ï¿½ï¿½ï¿½Ê²Ã´ï¿½ï¿½ 
+  	  N = new Prime*[size];
+  	  this->size = size;
+  	  index = 0;
+	}
+	~PrimeSet() {
+  	  for (int i = 0; i < index; ++i)  //ï¿½ï¿½ï¿½Ù¶ï¿½ï¿½ï¿½ 
+		delete N[i]; 
+	  delete[] N;
+	}
+	bool add(int n) {
+	  if(index == size)  return false;
+	  Prime *p = new Prime(n);
+	  N[index] = p;
+	  index += 1;
+	  return true;
+	}
+	bool isAllPrime() {
+	  for(int i = 0; i < index; i++)
+	    if (!N[i]->isPrime())
+	      return false;
+	  return true;
+	} 
+  private:
+  	Prime **N;
+	int size, index;
 };
-class Set {
-public:
-  Set(int from, int to) {
-    size = to - from + 1;
-    for (int i = 0; i < size; i++) {
-      set[i] = new SuperPrime(i + from);
-    }
-  }
-  ~Set() {
-    for (int i = 0; i < size; i++)
-      delete set[i];
-  }
-  int count() {
-    int count = 0;
-    for (int i = 0; i < size; i++)
-      if (set[i]->isSuperPrime())
-        count += 1;
-    return count;
-  }
-  int sum() {
-    int sum = 0;
-    for (int i = 0; i < size; i++)
-      if (set[i]->isSuperPrime())
-        sum += set[i]->getNum();
-    return sum;
-  }
-
-private:
-  SuperPrime *set[1000];
-  int size;
+class SuperPrime {
+  public:
+  	SuperPrime():number(0), pset(3) {  //ÎªÊ²Ã´ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ 
+  	}
+  	SuperPrime(int n):number(n), pset(3) {
+  	  split();  //ï¿½ï¿½ï¿½ï¿½ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+	}
+  	~SuperPrime() {
+	}
+  	bool isSuperPrime() {
+  	  //ï¿½ï¿½Ã´Ê¹ï¿½ï¿½psetï¿½ï¿½ 
+  	  Prime p(number);
+	  if (p.isPrime())
+	    return true; 
+  	  return false;
+	}
+  private:
+  	const int number;
+  	PrimeSet pset;
+	void split() {   //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ 
+	  // number split into N
+	  int temp = number;
+	  while(temp > 0) {
+	  	int n = temp % 10;
+	  	temp /= 10;
+	  	pset.add(n);  //ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ó£¿»ï¿½ï¿½Çºï¿½/ï¿½ï¿½/Æ½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ 
+	  } 
+	}
+	int sum() {
+	  return 0;
+	}
+	int multi() {
+	  return 0;
+	}
+	int squareSum() {
+	  return 0;
+	}
+};
+class SuperPrimeSet {
+  public:
+  	SuperPrimeSet(int from, int to) {
+  	  size = to - from;
+  	  for (int i = from; i < to; i++)
+  	    set[i-from] = new SuperPrime(i);
+	}
+  	~SuperPrimeSet() {
+  	  for(int i = 0; i < size; i++)
+  	    delete set[i];
+	}
+  	int count() {
+  	  int count = 0;
+  	  for (int i = 0; i < size; i++)
+  	    if(set[i]->isSuperPrime())
+  	      count += 1;
+	  return count; 
+	}
+  	int sum() {
+  	  int sum = 0;
+  	  /*
+  	  for (int i = 0; i < size; i++)
+  	    if(set[i].isSuperPrime())
+  	      sum += set[i];
+  	      */ 
+	  return sum; 
+	}
+  private:
+  	SuperPrime **set;
+  	int size, index;
 };
 int main() {
   SuperPrime sp(113);
