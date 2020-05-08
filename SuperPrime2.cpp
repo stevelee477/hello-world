@@ -1,5 +1,4 @@
-//?????????????????????????????????????????е????????
-#include <cmath>
+//作业：删除多余的集合类，使用继承方法实现相同的功能。 
 #include <iostream>
 class Prime {
   public:
@@ -23,20 +22,28 @@ class Prime {
 class PrimeSet {
   public:
   	PrimeSet(int size) {
-  	  //???????????? 
-  	  N = new Prime*[size];
+  	  //集合的构造什么？ 
+  	  set = new Prime*[size];
   	  this->size = size;
   	  index = 0;
 	}
 	~PrimeSet() {
-  	  for (int i = 0; i < index; ++i)  //??????? 
-		delete N[i]; 
-	  delete[] N;
+  	  for (int i = 0; i < index; ++i)  //销毁对象 
+		delete set[i]; 
+	  delete[] set;
 	}
+ 	int count() {
+  	  int count = 0;
+  	  for (int i = 0; i < size; i++)
+  	    if(set[i]->isPrime())
+  	      count += 1;
+	  return count; 
+	}
+
 	bool add(int n) {
 	  if(index == size)  return false;
 	  Prime *p = new Prime(n);
-	  N[index] = p;
+	  set[index] = p;
 	  index += 1;
 	  return true;
 	}
@@ -44,7 +51,7 @@ class PrimeSet {
     calcSum();
     calcSquareSum();
 	  for(int i = 0; i < index; i++)
-	    if (!N[i]->isPrime())
+	    if (!set[i]->isPrime())
 	      return false;
 	  return true;
 	} 
@@ -61,72 +68,44 @@ class PrimeSet {
     add(squareSum);
   }
   private:
-  	Prime **N;
+  	Prime **set;
 	int size, index;
 };
-class SuperPrime {
+class SuperPrime : public Prime {
   public:
-  	SuperPrime():number(0), pset(3) {  //????????У? 
+  	SuperPrime():Prime(0), pset(3) {  //为什么必须有？ 
   	}
-  	SuperPrime(int n):number(n), pset(3) {
-  	  split();  //???????????? 
+  	SuperPrime(int n):Prime(n), pset(3) {
+	  // number split into N
+	  int temp = n;
+	  while(temp > 0) {
+	  	int t = temp % 10;
+	  	temp /= 10;
+	  	pset.add(t);  //作业：单个数字为对象？还是和/积/平方和为对象？ 
+	  } 
 	}
   	~SuperPrime() {
 	}
-  	bool isSuperPrime() {
-  	  //??????pset?? 
-  	  Prime p(number);
-	  if (p.isPrime() && pset.isAllPrime())
+  	bool isPrime() {   //类/对象的接口，更抽象说是外观 
+	  if (Prime::isPrime() && pset.isAllPrime())
 	    return true; 
   	  return false;
 	}
   private:
-  	const int number;
   	PrimeSet pset;
-	void split() {   //????????????? 
-	  // number split into N
-	  int temp = number;
-	  while(temp > 0) {
-	  	int n = temp % 10;
-	  	temp /= 10;
-	  	pset.add(n);  //??????????????????????/??/?????????? 
-	  } 
+	int sum() {
+	  return 0;
 	}
-};
-class SuperPrimeSet {
-  public:
-  	SuperPrimeSet(int from, int to) {
-  	  size = to - from;
-  	  for (int i = from; i < to; i++)
-  	    set[i-from] = new SuperPrime(i);
+	int multi() {
+	  return 0;
 	}
-  	~SuperPrimeSet() {
-  	  for(int i = 0; i < size; i++)
-  	    delete set[i];
+	int squareSum() {
+	  return 0;
 	}
-  	int count() {
-  	  int count = 0;
-  	  for (int i = 0; i < size; i++)
-  	    if(set[i]->isSuperPrime())
-  	      count += 1;
-	  return count; 
-	}
-  	int sum() {
-  	  int sum = 0;
-  	  /*
-  	  for (int i = 0; i < size; i++)
-  	    if(set[i].isSuperPrime())
-  	      sum += set[i];
-  	      */ 
-	  return sum; 
-	}
-  private:
-  	SuperPrime **set;
-  	int size, index;
 };
 int main() {
   SuperPrime sp(113);
-  if (sp.isSuperPrime())
+  if (sp.isPrime())
     std::cout << "113 is SuperPrime" << std::endl;
   else
     std::cout << "113 is NOT SuperPrime" << std::endl;
