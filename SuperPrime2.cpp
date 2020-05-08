@@ -1,4 +1,5 @@
 //作业：删除多余的集合类，使用继承方法实现相同的功能。 
+#include <cmath>
 #include <iostream>
 class Prime {
   public:
@@ -58,13 +59,13 @@ class PrimeSet {
   void calcSum() {
     int sum = 0;
     for(int i = 0; i < index; i++)
-      sum += N[i]->getNum();
+      sum += set[i]->getNum();
     add(sum);
   }
   void calcSquareSum() {
     int squareSum = 0;
     for(int i = 0; i < index; i++)
-      squareSum += N[i]->getNum() * N[i]->getNum();
+      squareSum += set[i]->getNum() * set[i]->getNum();
     add(squareSum);
   }
   private:
