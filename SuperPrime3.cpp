@@ -533,7 +533,7 @@ istream &operator>>(istream &stream, BigInteger &val) { // Input the BigInteger
 
 class BigPrime {
 public:
-  BigPrime(string &str) : num(str) {}
+  BigPrime(string str) : num(str) {}
   virtual bool isPrime() const {
     for (int i = 2; i <= num; i++)
       if (num % i == 0)
@@ -550,44 +550,51 @@ public:
   BigSuperPrime(string &str) : BigPrime(str) {}
   virtual bool isPrime() const { return true; }
 };
+template <typename T>
 class Set {
 public:
-  Set(int sz);
-  ~Set();
-  bool add(BigPrime *bp);
-  bool remove(BigPrime *bp);
-  int count() const {
-    int ret = 0;
-    for (int i = 0; i < index; i++) {
-      if (pset[i]->isPrime())
-        ret += 1;
+    Set(int sz);
+    ~Set();
+    bool add(T* bp);
+    bool remove(T* bp);
+    int count() const {
+        int ret = 0;
+        for (int i = 0; i < index; i++) {
+            if (pset[i]->isPrime())
+                ret += 1;
+        }
+        return ret;
     }
-    return ret;
-  }
-  int sum() const { return 0; }
-
+    int sum() const {
+        return 0;
+    }
 private:
-  BigPrime **pset;
-  int size, index;
+    T** pset;
+    int size, index;
 };
+
 int main() {
-  Set set(1000);
-  BigSuperPrime bp(2), bp1(3);
+  Set<BigPrime> set(2);
+  BigPrime bp("123123213123"), bp1("123123123123");
   set.add(&bp);
   set.add(&bp1);
   std::cout << set.count() << std::endl;
   return 0;
 }
 
-Set::Set(int sz) : size(sz) {
+template <typename T>
+Set<T>::Set(int sz) : size(sz) {
   index = 0;
   pset = new BigPrime *[size]; //分配存储空间
 }
 
-Set::~Set() {
+template <typename T>
+Set<T>::~Set() {
   delete[] pset; //回收
 }
-bool Set::add(BigPrime *bp) {
+
+template <typename T>
+bool Set<T>::add(T *bp) {
   pset[index++] = bp;
   return true;
 }
